@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Incidencias</title>
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 0;
+            background-color: #f4f4f9;
+            font-family: Arial, sans-serif;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px 0;
+            margin: 10px 0;
+            background-color: #dc3545; /* Rojo para incidencia */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            border: none;
+            box-sizing: border-box;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #c82333;
+        }
+
+        .contenedor-formulario {
+            background-color: white;
+            width: 600px;
+            padding: 30px;
+            box-sizing: border-box;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+            color: #444;
+        }
+
+        /* He añadido textarea aquí para que tenga el mismo estilo que los inputs */
+        input[type="text"], input[type="number"], textarea {
+            width: 100%;
+            margin-bottom: 5px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: Arial, sans-serif; /* Para asegurar misma fuente en textarea */
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="contenedor-formulario">
+    <h2>Reportar Incidencia</h2>
+
+    <form action="/admin/servicios/incidencia-crear" method="post">
+
+        <label>DNI Cliente</label>
+        <input type="text" name="dni" maxlength="9" required placeholder="Ej: 12345678A">
+
+        <label>Comentario</label>
+        <textarea name="comentario" maxlength="200" required placeholder="Describe la incidencia..."></textarea>
+
+        <button type="submit" class="btn">Registrar Incidencia</button>
+        <a href="/admin/servicios" class="btn" style="background-color: #6c757d;">Volver</a>
+
+    </form>
+</div>
+</body>
+</html>

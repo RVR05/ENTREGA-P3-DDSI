@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestionar Turnos</title>
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 0;
+            background-color: #f4f4f9;
+            font-family: Arial, sans-serif;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px 0;
+            margin: 10px 0;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            border: none;
+            box-sizing: border-box;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .contenedor-formulario {
+            background-color: white;
+            width: 600px;
+            padding: 30px;
+            box-sizing: border-box;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+            color: #444;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="datetime-local"] {
+            width: 100%;
+            margin-bottom: 5px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: Arial, sans-serif;
+        }
+
+        .empleado-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #fdfdfd;
+            border-radius: 5px;
+        }
+
+        h4 { margin: 0 0 10px 0; color: #007bff;}
+    </style>
+</head>
+<body>
+
+<div class="contenedor-formulario">
+    <h2>Crear Turno</h2>
+
+    <form action="/admin/servicios/turnos-crear" method="post">
+
+        <label>DNI del Empleado</label>
+        <input type="text" name="dni" maxlength="9" required placeholder="Ej: 12345678A">
+
+        <label>Área del festival (0-20)</label>
+        <input type="number" name="area" placeholder="Ej: 1" min="0" max="20" required>
+
+        <label>Fecha y Hora de Inicio</label>
+        <input type="datetime-local" name="fechaInicio" required>
+
+        <label>Fecha y Hora de Salida</label>
+        <input type="datetime-local" name="fechaSalida" required>
+
+        <button type="submit" class="btn">Guardar Turno</button>
+        <a href="/admin/servicios" class="btn" style="background-color: #6c757d;">Volver</a>
+
+    </form>
+</div>
+</body>
+</html>

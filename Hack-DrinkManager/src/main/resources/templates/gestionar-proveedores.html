@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Asignar Proveedores</title>
+
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 0;
+      background-color: #f4f4f9;
+      font-family: Arial, sans-serif;
+    }
+
+    h2 {
+      color: #333;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 12px 0;
+      margin: 10px 0;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: background-color 0.3s;
+      border: none;
+      box-sizing: border-box;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+
+    .contenedor-formulario {
+      background-color: white;
+      width: 600px;
+      padding: 30px;
+      box-sizing: border-box;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+      color: #444;
+    }
+
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      margin-bottom: 5px;
+      padding: 10px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .empleado-card {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 15px;
+      background: #fdfdfd;
+      border-radius: 5px;
+    }
+
+    h4 { margin: 0 0 10px 0; color: #007bff;}
+  </style>
+</head>
+<body>
+
+<div class="contenedor-formulario">
+  <h2>Asignar Proveedor</h2>
+
+  <form action="/admin/servicios/proveedores-asignar" method="post">
+
+    <label>NIF Empresa</label>
+    <input type="text" name="nifEmpresa" maxlength="9" required placeholder="Ej: A12345678">
+
+    <label>Nombre Servicio</label>
+    <input type="text" name="nomServicio" maxlength="20" required placeholder="Ej: Limpieza">
+
+    <label>Área del festival (0-20)</label>
+    <input type="number" name="area" placeholder="Ej: 1" min="0" max="20">
+
+    <label>Número Total de Empleados</label>
+    <input type="number"
+           name="numEmpleados"
+           required
+           min="0"
+           max="10"
+           placeholder="Máx 10 empleados">
+
+    <h3>Listado de Empleados (Máx 10)</h3>
+
+    <div class="empleado-card">
+      <h4>Empleado 1</h4>
+      <input type="text" name="empleados[0].dni" placeholder="DNI" maxlength="9">
+      <input type="text" name="empleados[0].nombre" placeholder="Nombre">
+      <input type="text" name="empleados[0].apellidos" placeholder="Apellidos">
+      <input type="text" name="empleados[0].telefono" placeholder="Teléfono" maxlength="9">
+    </div>
+
+    <div class="empleado-card">
+      <h4>Empleado 2</h4>
+      <input type="text" name="empleados[1].dni" placeholder="DNI" maxlength="9">
+      <input type="text" name="empleados[1].nombre" placeholder="Nombre">
+      <input type="text" name="empleados[1].apellidos" placeholder="Apellidos">
+      <input type="text" name="empleados[1].telefono" placeholder="Teléfono" maxlength="9">
+    </div>
+
+    <div class="empleado-card">
+      <h4>Empleado 3</h4>
+      <input type="text" name="empleados[2].dni" placeholder="DNI" maxlength="9">
+      <input type="text" name="empleados[2].nombre" placeholder="Nombre">
+      <input type="text" name="empleados[2].apellidos" placeholder="Apellidos">
+      <input type="text" name="empleados[2].telefono" placeholder="Teléfono" maxlength="9">
+    </div>
+
+    <div class="empleado-card">
+      <h4>Empleado 4</h4>
+      <input type="text" name="empleados[3].dni" placeholder="DNI" maxlength="9">
+      <input type="text" name="empleados[3].nombre" placeholder="Nombre">
+      <input type="text" name="empleados[3].apellidos" placeholder="Apellidos">
+      <input type="text" name="empleados[3].telefono" placeholder="Teléfono" maxlength="9">
+    </div>
+
+    <div class="empleado-card">
+      <h4>Empleado 5</h4>
+      <input type="text" name="empleados[4].dni" placeholder="DNI" maxlength="9">
+      <input type="text" name="empleados[4].nombre" placeholder="Nombre">
+      <input type="text" name="empleados[4].apellidos" placeholder="Apellidos">
+      <input type="text" name="empleados[4].telefono" placeholder="Teléfono" maxlength="9">
+    </div>
+
+    <div class="empleado-card">
+      <h4>Empleado 6</h4>
+      <input type="text" name="empleados[5].dni" placeholder="DNI" maxlength="9">
+      <input type="text" name="empleados[5].nombre" placeholder="Nombre">
+      <input type="text" name="empleados[5].apellidos" placeholder="Apellidos">
+      <input type="text" name="empleados[5].telefono" placeholder="Teléfono" maxlength="9">
+    </div>
+
+    <div class="empleado-card">
+      <h4>Empleado 7</h4>
+      <input type="text" name="empleados[6].dni" placeholder="DNI" maxlength="9">
+      <input type="text" name="empleados[6].nombre" placeholder="Nombre">
+      <input type="text" name="empleados[6].apellidos" placeholder="Apellidos">
+      <input type="text" name="empleados[6].telefono" placeholder="Teléfono" maxlength="9">
+    </div>
+
+    <div class="empleado-card">
+      <h4>Empleado 8</h4>
+      <input type="text" name="empleados[7].dni" placeholder="DNI" maxlength="9">
+      <input type="text" name="empleados[7].nombre" placeholder="Nombre">
+      <input type="text" name="empleados[7].apellidos" placeholder="Apellidos">
+      <input type="text" name="empleados[7].telefono" placeholder="Teléfono" maxlength="9">
+    </div>
+
+    <div class="empleado-card">
+      <h4>Empleado 9</h4>
+      <input type="text" name="empleados[8].dni" placeholder="DNI" maxlength="9">
+      <input type="text" name="empleados[8].nombre" placeholder="Nombre">
+      <input type="text" name="empleados[8].apellidos" placeholder="Apellidos">
+      <input type="text" name="empleados[8].telefono" placeholder="Teléfono" maxlength="9">
+    </div>
+
+    <div class="empleado-card">
+      <h4>Empleado 10</h4>
+      <input type="text" name="empleados[9].dni" placeholder="DNI" maxlength="9">
+      <input type="text" name="empleados[9].nombre" placeholder="Nombre">
+      <input type="text" name="empleados[9].apellidos" placeholder="Apellidos">
+      <input type="text" name="empleados[9].telefono" placeholder="Teléfono" maxlength="9">
+    </div>
+
+    <button type="submit" class="btn">Guardar Asignación</button>
+    <a href="/admin/servicios" class="btn" style="background-color: #6c757d;">Volver</a>
+
+  </form>
+</div>
+</body>
+</html>

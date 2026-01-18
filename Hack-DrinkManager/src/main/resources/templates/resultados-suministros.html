@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultado Reabastecimiento</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 0;
+            background-color: #f4f4f9;
+            font-family: Arial, sans-serif;
+        }
+
+        .contenedor-formulario {
+            background-color: white;
+            width: 600px;
+            padding: 30px;
+            box-sizing: border-box;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        .mensaje-exito {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .mensaje-error {
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .dato-fila {
+            background-color: #f8f9fa;
+            border-left: 5px solid #007bff;
+            padding: 15px;
+            margin: 10px 0;
+            text-align: left;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dato-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .dato-valor {
+            font-family: monospace;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px 0;
+            margin-top: 30px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            border: none;
+            box-sizing: border-box;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+
+<div class="contenedor-formulario">
+    <h2>Resultado de la Operación</h2>
+
+    <div th:if="${exito}">
+        <div class="mensaje-exito" th:text="${mensaje}"></div>
+
+        <div class="dato-fila">
+            <span class="dato-label">Identificador Suministro:</span>
+            <span class="dato-valor" th:text="${idSuministro}"></span>
+        </div>
+
+        <div class="dato-fila">
+            <span class="dato-label">Área:</span>
+            <span class="dato-valor" th:text="${area}"></span>
+        </div>
+
+        <div class="dato-fila">
+            <span class="dato-label">Nivel Total Actualizado:</span>
+            <span class="dato-valor" th:text="${nivelTotal}"></span>
+        </div>
+    </div>
+
+    <div th:unless="${exito}">
+        <div class="mensaje-error" th:text="${mensaje}"></div>
+    </div>
+
+    <a href="/admin/servicios/suministros" class="btn">Volver</a>
+</div>
+
+</body>
+</html>
