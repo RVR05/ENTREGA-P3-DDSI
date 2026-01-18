@@ -3,6 +3,7 @@ package com.hackanddrink.Hack.DrinkManager;
 import java.security.Timestamp;
 import java.sql.*;
 import javax.sql.DataSource;
+import java.util.UUID; // Para generar el localizador aleatorio
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -1262,6 +1263,340 @@ public class SistemaController {
     }
 
     //----FIN-GESTION-ARTISTAS----//
+    
+    //----COMIENZO-GESTION-CLIENTES----//
+
+     @GetMapping("/cliente/menu")
+    public String mostrarMenuCliente() {
+        return "menu-cliente";
+    }
+
+    @GetMapping("/cliente/menu/alta")
+    public String mostrarFormularioAlta() {
+
+        return "alta";
+    }
+
+    @GetMapping("/cliente/menu/comprar")
+    public String mostrarFormularioCompra() {
+
+        return "comprar";
+    }
+
+    @GetMapping("/cliente/menu/modificar")
+    public String mostrarFormularioModificar() {
+
+        return "modificar";
+    }
+
+    @GetMapping("/cliente/menu/baja")
+    public String mostrarFormularioBaja() {
+
+        return "baja";
+    }
+
+    @GetMapping("/cliente/menu/encuesta")
+    public String mostrarFormularioEncuesta() {
+
+        return "encuesta";
+    }
+
+    @GetMapping("/cliente/menu/abono")
+    public String mostrarFormularioAbono() {
+
+        return "abono";
+    }
+
+    @GetMapping("/cliente/menu/atencion")
+    public String mostrarFormularioAtencion() {
+
+        return "atencion";
+    }
+
+
+    @PostMapping("/cliente/menu/alta")
+    public String altaCliente(@RequestParam String dni, @RequestParam String correo, @RequestParam String contrasena, @RequestParam String nombre, @RequestParam String apellidos, @RequestParam String telefono,@RequestParam(required = false) String consentimiento,  Model model) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+            java.sql.Savepoint savepoint = conn.setSavepoint("PuntoSeguro");
+            try {
+                // Validar consentimiento
+                if (consentimiento == null) {
+                    model.addAttribute("mensaje", "Debe aceptar el uso de sus datos para continuar.");
+                    model.addAttribute("volver", "/Cliente/Menu/alta");
+                    return "resultadoCliente";
+                }
+
+                // Inserción
+                String sql = "INSERT INTO Cliente (CorreoElectronico, Contrasena, Nombre, Apellidos, Telefono, DNI_NIF) VALUES (?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setString(1, correo);
+                    ps.setString(2, contrasena);
+                    ps.setString(3, nombre);
+                    ps.setString(4, apellidos);
+                    ps.setLong(5, Long.parseLong(telefono));
+                    ps.setString(6, dni);
+                    ps.executeUpdate();
+                }
+
+                conn.commit();
+                model.addAttribute("mensaje", "Registro completado con éxito");
+                model.addAttribute("volver", "/Cliente/Menu");
+                return "resultadoCliente";
+
+            } catch (Exception e) {
+                conn.rollback(savepoint);
+                throw new SQLException("Fallo en el registro: " + e.getMessage()); //
+            }
+        }
+    }
+
+    @PostMapping("/cliente/menu/modificar")
+    public String modificarCliente(@RequestParam String correo, @RequestParam String pass, @RequestParam String nombre, @RequestParam String apellidos, @RequestParam String telefono, @RequestParam String dni,@RequestParam(required = false) String consentimiento,  Model model) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+            java.sql.Savepoint savepoint = conn.setSavepoint("PuntoSeguro");
+            try {
+                // Validar consentimiento
+                if (consentimiento == null) {
+                    model.addAttribute("mensaje", "Debe aceptar el uso de sus datos para continuar.");
+                    model.addAttribute("volver", "/Cliente/Menu/modificar");
+                    return "resultadoCliente";
+                }
+                String sql = "UPDATE Cliente SET CorreoElectronico=?, Contrasena=?, Nombre=?, Apellidos=?, Telefono=? WHERE DNI_NIF=?";
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setString(1, correo);
+                    ps.setString(2, pass);
+                    ps.setString(3, nombre);
+                    ps.setString(4, apellidos);
+                    ps.setLong(5, Long.parseLong(telefono));
+                    ps.setString(6, dni);
+                    ps.executeUpdate();
+                }
+
+                conn.commit();
+                model.addAttribute("mensaje", "Datos modificados correctamente");
+                model.addAttribute("volver", "/Cliente/Menu");
+                return "resultadoCliente";
+
+            } catch (Exception e) {
+                conn.rollback(savepoint);
+                throw new SQLException("Error al modificar: " + e.getMessage());
+            }
+        }
+    }
+
+    @PostMapping("/cliente/menu/baja")
+    public String bajaCliente(@RequestParam String dni,@RequestParam(required = false) String consentimiento, Model model) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+            java.sql.Savepoint savepoint = conn.setSavepoint("PuntoSeguro");
+            try {
+                // Validar consentimiento
+                if (consentimiento == null) {
+                    model.addAttribute("mensaje", "Debe aceptar el uso de sus datos para continuar.");
+                    model.addAttribute("volver", "/Cliente/Menu/modificar");
+                    return "resultadoCliente";
+                }
+                // Validar eventos futuros
+                String sqlVerificacion = "SELECT COUNT(*) FROM Corresponde c " + "JOIN Evento e ON c.Nombre = e.Nombre AND c.Localizacion = e.Localizacion AND c.Fecha = e.Fecha " +  "WHERE c.DNI_NIF = ? AND e.Fecha > SYSDATE";
+                try (PreparedStatement ps = conn.prepareStatement(sqlVerificacion)) {
+                    ps.setString(1, dni);
+                    ResultSet rs = ps.executeQuery();
+                    rs.next();
+                    if (rs.getInt(1) > 0) throw new SQLException("No puedes darte de baja: tienes entradas futuras");
+                }
+
+                // Delete
+                String sqlDelete = "DELETE FROM Cliente WHERE DNI_NIF = ?";
+                try (PreparedStatement ps = conn.prepareStatement(sqlDelete)) {
+                    ps.setString(1, dni);
+                    ps.executeUpdate();
+                }
+
+                conn.commit();
+                model.addAttribute("mensaje", "Cuenta eliminada correctamente");
+                model.addAttribute("volver", "/Cliente/login");
+                return "resultadoCliente";
+
+            } catch (Exception e) {
+                conn.rollback(savepoint);
+                throw new SQLException("Error durante la baja: " + e.getMessage());
+            }
+        }
+    }
+
+    @PostMapping("/cliente/menu/comprar")
+    public String comprarEntrada(@RequestParam String nombreEvento, @RequestParam String localizacionEvento, @RequestParam String fechaEvento, @RequestParam int numEntradas, @RequestParam String tipoEntrada, @RequestParam String metodoPago, @RequestParam long numeroTarjeta, @RequestParam String caducidadTarjeta, @RequestParam int codigoVerificacionTarjeta, @RequestParam String dni,  Model model) throws SQLException {
+
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+            Date sqlFechaEvento = Date.valueOf(fechaEvento);
+            Date sqlCaducidad = Date.valueOf(caducidadTarjeta);
+            java.sql.Savepoint savepoint = conn.setSavepoint("PuntoSeguro");
+
+            try {
+
+                String localizador = UUID.randomUUID().toString().replace("-", "").substring(0, 20).toUpperCase();
+
+                // Insertar Entrada
+                String sqlEntrada = "INSERT INTO Entrada (DNI_NIF, Localizador, NumeroEntradas, TipoEntrada, MetodoPago, NumeroTarjeta) VALUES (?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement psEnt = conn.prepareStatement(sqlEntrada)) {
+                    psEnt.setString(1, dni);
+                    psEnt.setString(2, localizador);
+                    psEnt.setInt(3, numEntradas);
+                    psEnt.setString(4, tipoEntrada);
+                    psEnt.setString(5, metodoPago);
+                    psEnt.setLong(6, numeroTarjeta);
+                    psEnt.executeUpdate();
+                }
+                // Insertar Tarjeta
+                String sqltarjeta = "INSERT INTO Tarjeta(NumeroTarjeta,FechaCaducidad, CodigoSeguridad) VALUES (?, ?, ?)";
+                try (PreparedStatement pstarjeta = conn.prepareStatement(sqltarjeta)) {
+                    pstarjeta.setLong(1, numeroTarjeta);
+                    pstarjeta.setDate(2, sqlCaducidad);
+                    pstarjeta.setInt(3, codigoVerificacionTarjeta);
+                    pstarjeta.executeUpdate();
+                }
+
+                // Corresponde
+                String sqlCorresponde = "INSERT INTO Corresponde (DNI_NIF, Localizador, Nombre, Localizacion, Fecha) VALUES (?, ?, ?, ?, ?)";
+                try (PreparedStatement psCorr = conn.prepareStatement(sqlCorresponde)) {
+                    psCorr.setString(1, dni);
+                    psCorr.setString(2, localizador);
+                    psCorr.setString(3, nombreEvento);
+                    psCorr.setString(4, localizacionEvento);
+                    psCorr.setDate(5, sqlFechaEvento);
+                    psCorr.executeUpdate();
+                }
+
+                conn.commit();
+                model.addAttribute("mensaje", "Compra realizada. Localizador: " + localizador);
+                model.addAttribute("volver", "/Cliente/Menu");
+                return "resultadoCliente";
+
+            } catch (Exception e) {
+                conn.rollback(savepoint);
+                throw new SQLException("Fallo en la compra: " + e.getMessage());
+            }
+        }
+    }
+
+    @PostMapping("/cliente/menu/encuesta")
+    public String enviarEncuesta(@RequestParam String nombreEvento, @RequestParam String locEvento, @RequestParam String fechaEvento, @RequestParam String respuesta, @RequestParam String dni,  Model model) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+            Date sqlFechaEvento = Date.valueOf(fechaEvento);
+            java.sql.Savepoint savepoint = conn.setSavepoint("PuntoSeguro");
+
+            try {
+
+                // Validar Encuesta duplicada
+                String sqlDup = "SELECT COUNT(*) FROM Encuesta WHERE DNI_NIF=? AND Nombre=? AND Localizacion=? AND Fecha=?";
+                try (PreparedStatement ps = conn.prepareStatement(sqlDup)) {
+                    ps.setString(1, dni);
+                    ps.setString(2, nombreEvento);
+                    ps.setString(3, locEvento);
+                    ps.setDate(4, sqlFechaEvento);
+                    ResultSet rs = ps.executeQuery();
+                    rs.next();
+                    if (rs.getInt(1) > 0) throw new SQLException("Ya has rellenado esta encuesta");
+                }
+
+                // Insertar
+                String sqlInsert = "INSERT INTO Encuesta (DNI_NIF, RespuestaEncuesta, Nombre, Localizacion, Fecha) VALUES (?, ?, ?, ?, ?)";
+                try (PreparedStatement ps = conn.prepareStatement(sqlInsert)) {
+                    ps.setString(1, dni);
+                    ps.setString(2, respuesta);
+                    ps.setString(3, nombreEvento);
+                    ps.setString(4, locEvento);
+                    ps.setDate(5, sqlFechaEvento);
+                    ps.executeUpdate();
+                }
+
+                conn.commit();
+                model.addAttribute("mensaje", "Encuesta enviada correctamente");
+                model.addAttribute("volver", "/Cliente/Menu");
+                return "resultadoCliente";
+
+            } catch (Exception e) {
+                conn.rollback(savepoint);
+                throw new SQLException("Error encuesta: " + e.getMessage());
+            }
+        }
+    }
+
+    @PostMapping("/cliente/menu/abono")
+    public String solicitarAbono(@RequestParam String tipoAbono, @RequestParam String comprobacionAdmin, @RequestParam String dni, Model model) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+            java.sql.Savepoint savepoint = conn.setSavepoint("PuntoSeguro");
+
+            try {
+                if ("INVALIDO".equals(comprobacionAdmin)){
+                    throw new SQLException("Requisitos no cumplidos");
+                }
+
+                String sql = "INSERT INTO Tiene (Tipo, Comprobacion, DNI_NIF) VALUES (?, ?, ?)";
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setString(1, tipoAbono);
+                    ps.setString(2, comprobacionAdmin);
+                    ps.setString(3, dni);
+                    ps.executeUpdate();
+                }
+
+                conn.commit();
+                model.addAttribute("mensaje", "Abono aplicado correctamente");
+                model.addAttribute("volver", "/Cliente/Menu");
+                return "resultadoCliente";
+
+            } catch (Exception e) {
+                conn.rollback(savepoint);
+                throw new SQLException("Error abono: " + e.getMessage());
+            }
+        }
+    }
+
+    @PostMapping("/cliente/menu/atencion")
+    public String atencionCliente(@RequestParam String tipoSolicitud, @RequestParam String comprobacionAdmin, @RequestParam String detalleSolicitud,@RequestParam String dni, Model model) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+            java.sql.Savepoint savepoint = conn.setSavepoint("PuntoSeguro");
+            try {
+                if ("INVALIDO".equals(comprobacionAdmin)){
+                    throw new SQLException("Requisitos no cumplidos");
+                }
+                String sql = "INSERT INTO Enviar (Tipo, Comprobacion,detalleSolicitud, DNI_NIF) VALUES (?, ?, ?, ?)";
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setString(1, tipoSolicitud);
+                    ps.setString(2, comprobacionAdmin);
+                    ps.setString(3, detalleSolicitud);
+                    ps.setString(4, dni);
+                    ps.executeUpdate();
+                }
+
+                conn.commit();
+                model.addAttribute("mensaje", "Solicitud enviada correctamente");
+                model.addAttribute("volver", "/Cliente/Menu");
+                return "resultadoCliente";
+
+            } catch (Exception e) {
+                conn.rollback(savepoint);
+                throw new SQLException("Error atención al cliente: " + e.getMessage());
+            }
+        }
+    }
+
+
+
+    //----FIN-GESTION-CLIENTES----//
 
 }
 
