@@ -19,15 +19,19 @@
 
 <h2>Darse de baja</h2>
 
+<label>DNI:</label>
+<input type="text" name="dni" required><br>
+
 <p>
-  <input type="checkbox" name="consentimiento" required>
+  <input type="checkbox" name="consentimiento"  required>
   Al solicitar la baja, sus datos se eliminarán de forma inmediata siempre que no tenga entradas pendientes.
   En caso de existir entradas pendientes, se conservarán únicamente los datos necesarios para cumplir las
   obligaciones legales o finalizar las transacciones .
 
 </p>
 
-<form th:action="@{/Cliente/Menu/baja}" method="post">
+
+<form th:action="@{/cliente/menu/baja}" method="post">
   <button type="submit">Confirmar baja</button>
 </form>
 
