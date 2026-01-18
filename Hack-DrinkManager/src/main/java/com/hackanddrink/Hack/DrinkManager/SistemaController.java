@@ -1732,5 +1732,247 @@ public class SistemaController {
     
     //----FIN-GESTION-INFRAESTRUCTURA----//
 
+
+    // ======== = RF3 - GESTIÓN DE PATROCINADORES ==========
+
+    @GetMapping("/admin/patrocinadores/opciones")
+    public String mostrarOpcionesPatrocinadores() {
+        return "patrocinadores-opciones";
+    }
+
+    // ========== RF3.1 - REGISTRO DE PATROCINADORES ==========
+
+    @GetMapping("/admin/patrocinadores/nuevo")
+    public String mostrarFormularioPatrocinador() {
+        return "formulario-patrocinador";
+    }
+
+    @PostMapping("/admin/patrocinadores/nuevo")
+    @ResponseBody
+    public String registrarPatrocinador(
+            @RequestParam String dni,
+            @RequestParam String nombrePersonaContacto,
+            @RequestParam String correoElectronicoPersonaContacto,
+            @RequestParam String numeroTelefono,
+            @RequestParam String nombreEmpresa,
+            @RequestParam(required = false) String tipoBeneficios,
+            @RequestParam(required = false) String descripcionBeneficios
+    ) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+
+            try {
+                // 1. Insertar persona de contacto
+                String sqlPersona = "INSERT INTO PERSONA_CONTACTO (DNI, NombrePersonaContacto, CorreoElectronicoPersonaContacto, NumeroTelefono) VALUES (?, ?, ?, ?)";
+                try (PreparedStatement psPersona = conn.prepareStatement(sqlPersona)) {
+                    psPersona.setString(1, dni);
+                    psPersona.setString(2, nombrePersonaContacto);
+                    psPersona.setString(3, correoElectronicoPersonaContacto);
+                    psPersona.setString(4, numeroTelefono);
+                    psPersona.executeUpdate();
+                }
+
+                // 2. Insertar patrocinador
+                String sqlPatrocinador = "INSERT INTO PATROCINADORES (NombreEmpresa, DNI, TipoBeneficios, DescripcionBeneficios) VALUES (?, ?, ?, ?)";
+                try (PreparedStatement psPatrocinador = conn.prepareStatement(sqlPatrocinador)) {
+                    psPatrocinador.setString(1, nombreEmpresa);
+                    psPatrocinador.setString(2, dni);
+                    psPatrocinador.setString(3, tipoBeneficios);
+                    psPatrocinador.setString(4, descripcionBeneficios);
+                    psPatrocinador.executeUpdate();
+                }
+
+                conn.commit();
+                return "Patrocinador registrado correctamente";
+
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            }
+        }
+    }
+
+    // ========== RF3.2 - CONSULTA DE PATROCINADORES ==========
+
+    @GetMapping("/admin/patrocinadores/lista")
+    public String listarPatrocinadores(Model model) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+
+            String sql = "SELECT p.NombreEmpresa, pc.CorreoElectronicoPersonaContacto " +
+                     "FROM PATROCINADORES p " +
+                    "JOIN PERSONA_CONTACTO pc ON p.DNI = pc.DNI " +
+                    "ORDER BY p.NombreEmpresa";
+
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ResultSet rs = ps.executeQuery();
+
+                java.util.List<java.util.Map<String, String>> patrocinadores = new java.util.ArrayList<>();
+
+                while (rs.next()) {
+                    java.util.Map<String, String> patrocinador = new java.util.HashMap<>();
+                    patrocinador.put("nombreEmpresa", rs.getString("NombreEmpresa"));
+                    patrocinador.put("correoElectronicoPersonaContacto", rs.getString("CorreoElectronicoPersonaContacto"));
+                    patrocinadores.add(patrocinador);
+                }
+
+                model.addAttribute("patrocinadores", patrocinadores);
+                conn.commit();
+                return "lista-patrocinadores";
+            }
+        }
+    }
+
+    // ========== RF3.3 - REGISTRO DE CONTRATOS ==========
+
+    @GetMapping("/admin/contratos/nuevo")
+    public String mostrarFormularioContrato() {
+        return "formulario-contrato";
+    }
+
+    @PostMapping("/admin/contratos/nuevo")
+    @ResponseBody
+    public String registrarContrato(
+            @RequestParam int ID,
+            @RequestParam String nombreEmpresa,
+            @RequestParam String fechaInicio,
+            @RequestParam String fechaFin,
+            @RequestParam double importeAcordado,
+            @RequestParam String datosBancarios,
+            @RequestParam String metodoDePago,
+            @RequestParam String tipoDePago,
+            @RequestParam(required = false) Integer duracionDelFraccionado
+    ) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+
+            java.sql.Savepoint savepoint = conn.setSavepoint("AntesContrato");
+
+            try {
+                // 1. Insertar contrato con ID manual
+                String sqlContrato = "INSERT INTO CONTRATOS (ID, ImporteAcordado, FechaInicio, FechaFin, DatosBancarios, MetodoDePago, TipoDePago, DuracionDelFraccionado) " +
+                        "VALUES (?, ?, TO_DATE(?, 'YYYY-MM-DD'), TO_DATE(?, 'YYYY-MM-DD'), ?, ?, ?, ?)";
+
+                try (PreparedStatement psContrato = conn.prepareStatement(sqlContrato)) {
+                    psContrato.setInt(1, ID);
+                    psContrato.setDouble(2, importeAcordado);
+                    psContrato.setString(3, fechaInicio);
+                    psContrato.setString(4, fechaFin);
+                    psContrato.setString(5, datosBancarios);
+                    psContrato.setString(6, metodoDePago);
+                    psContrato.setString(7, tipoDePago);
+
+                    if (duracionDelFraccionado != null) {
+                        psContrato.setInt(8, duracionDelFraccionado);
+                    } else {
+                        psContrato.setNull(8, java.sql.Types.INTEGER);
+                    }
+
+                    psContrato.executeUpdate();
+                }
+
+                // 2. Insertar firma
+                String sqlFirma = "INSERT INTO FIRMA_P(ID, NombreEmpresa) VALUES (?, ?)";
+                try (PreparedStatement psFirma = conn.prepareStatement(sqlFirma)) {
+                    psFirma.setInt(1, ID);
+                    psFirma.setString(2, nombreEmpresa);
+                    psFirma.executeUpdate();
+                }
+
+                conn.commit();
+                return "Contrato registrado correctamente con ID: " + ID;
+
+            } catch (SQLException e) {
+                conn.rollback(savepoint);
+                throw e;
+            }
+        }
+    }
+
+    // ========== RF3.4 - CONTROL DE BENEFICIOS ==========
+
+    @GetMapping("/admin/beneficios/actualizar")
+    public String mostrarFormularioActualizarBeneficios() {
+        return "formulario-actualizar-beneficios";
+    }
+
+    @PostMapping("/admin/beneficios/actualizar")
+    @ResponseBody
+    public String actualizarBeneficios(
+            @RequestParam String nombreEmpresa,
+            @RequestParam String tipoBeneficios,
+            @RequestParam String descripcionBeneficios
+    ) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+
+            try {
+                String sql = "UPDATE PATROCINADORES SET TipoBeneficios = ?, DescripcionBeneficios = ? WHERE NombreEmpresa = ?";
+
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setString(1, tipoBeneficios);
+                    ps.setString(2, descripcionBeneficios);
+                    ps.setString(3, nombreEmpresa);
+
+                    int filasAfectadas = ps.executeUpdate();
+
+                    if (filasAfectadas > 0) {
+                        conn.commit();
+                        return "Beneficios actualizados correctamente";
+                    } else {
+                        conn.rollback();
+                        return "No se encontró el patrocinador";
+                    }
+                }
+
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            }
+        }
+    }
+
+    // ========== RF3.5 - GESTIÓN DE PAGOS ==========
+
+    @GetMapping("/admin/pagos/nuevo")
+    public String mostrarFormularioPago() {
+        return "formulario-pago";
+    }
+
+    @PostMapping("/admin/pagos/nuevo")
+    @ResponseBody
+    public String registrarPago(
+            @RequestParam int ID,
+            @RequestParam int numPago
+    ) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+
+            try {
+                String sql = "INSERT INTO PAGOS(ID, NumPago) VALUES (?, ?)";
+
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setInt(1, ID);
+                    ps.setInt(2, numPago);
+                    ps.executeUpdate();
+                }
+
+                conn.commit();
+                return "Pago registrado correctamente";
+
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            }
+        }
+    }
+}
+
+        
 }
 
