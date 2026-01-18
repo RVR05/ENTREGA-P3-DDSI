@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Pago</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #8B5CF6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #6D28D9;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            margin-left: 10px;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .info-box {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Registrar Pago de Contrato</h1>
+
+<div class="info-box">
+    <strong>Nota:</strong> Asegúrate de tener el ID del contrato y el número de pago correspondiente.
+</div>
+
+<form action="/admin/pagos/nuevo" method="post">
+
+    <div class="form-group">
+        <label for="ID">ID del Contrato:</label>
+        <input type="number" id="ID" name="ID" required>
+    </div>
+
+    <div class="form-group">
+        <label for="numPago">Número de Pago:</label>
+        <input type="number" id="numPago" name="numPago" required min="1">
+    </div>
+
+
+    <button type="submit">Registrar Pago</button>
+    <button type="button" class="btn-secondary" onclick="history.back()">Cancelar</button>
+</form>
+
+</body>
+</html>

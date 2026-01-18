@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Contrato</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #8B5CF6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #6D28D9;
+        }
+        .aspectos-legales {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .aspectos-legales h3 {
+            margin-top: 0;
+        }
+        .aspectos-legales p {
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .aspectos-legales em {
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Registro de Contrato</h1>
+
+<form action="admin/contratos/nuevo" method="post">
+
+
+    <div class="form-group">
+        <label for="ID">ID:</label>
+        <input type="number" id="ID" name="ID" required>
+    </div>
+
+    <div class="form-group">
+        <label for="nombreEmpresa">Nombre del Patrocinador:</label>
+        <input type="text" id="nombreEmpresa" name="nombreEmpresa" required>
+    </div>
+
+    <div class="form-group">
+        <label for="fechaInicio">Fecha de Inicio:</label>
+        <input type="date" id="fechaInicio" name="fechaInicio" required>
+    </div>
+
+    <div class="form-group">
+        <label for="fechaFin">Fecha de Fin:</label>
+        <input type="date" id="fechaFin" name="fechaFin" required>
+    </div>
+
+    <div class="form-group">
+        <label for="importeAcordado">Importe (€):</label>
+        <input type="number" id="importeAcordado" name="importeAcordado" step="0.01" required>
+    </div>
+
+    <div class="form-group">
+        <label for="datosBancarios">Cuenta Bancaria (IBAN):</label>
+        <input type="text" id="datosBancarios" name="datosBancarios" required pattern="ES[0-9]{22}" placeholder="ES0000000000000000000000">
+    </div>
+
+    <div class="form-group">
+        <label for="metodoDePago">Metodo de Pago:</label>
+        <input type="text" id="metodoDePago" name="metodoDePago" required>
+    </div>
+
+    <div class="form-group">
+        <label for="tipoDePago">Tipo de Pago:</label>
+        <input type="text" id="tipoDePago" name="tipoDePago" required>
+    </div>
+
+    <div class="form-group">
+        <label for="duracionDelFraccionado">Duración del Fraccionado:</label>
+        <input type="number" id="duracionDelFraccionado" name="duracionDelFraccionado" >
+    </div>
+
+    <div class="aspectos-legales">
+        <h3>Protección de Datos Personales</h3>
+        <p><strong>Responsable:</strong> Festival Hack&Drink (CIF: B12345678)</p>
+        <p><strong>Finalidad:</strong> Gestión de contratos y pagos de patrocinadores</p>
+        <p><strong>Legitimación:</strong> Ejecución de contrato y consentimiento del interesado</p>
+        <p><strong>Datos sensibles identificados:</strong> Cuenta Bancaria, Importe</p>
+
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="consentimiento" required>
+                He leído y acepto el tratamiento de mis datos bancarios según la información proporcionada
+            </label>
+        </div>
+
+        <p><em>Derechos: Acceso, rectificación, supresión, oposición, portabilidad y limitación del tratamiento.
+            Contacto: proteccion-datos@hackanddrink.com</em></p>
+    </div>
+
+    <button type="submit">Registrar Contrato</button>
+</form>
+
+</body>
+</html>

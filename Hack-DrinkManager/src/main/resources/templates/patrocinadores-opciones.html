@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opciones de Patrocinadores</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+            font-family: Arial, sans-serif;
+        }
+
+        .contenedor-menu {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            text-align: center;
+            width: 350px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px 0;
+            margin: 10px 0;
+            background-color: #8B5CF6;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            border: none;
+            box-sizing: border-box;
+        }
+
+        .btn:hover {
+            background-color: #6D28D9;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="contenedor-menu">
+    <h2>Gestión de Patrocinadores</h2>
+
+    <a href="/admin/patrocinadores/nuevo" class="btn">Registrar Patrocinador</a>
+
+    <a href="/admin/patrocinadores/lista" class="btn">Consultar Patrocinadores</a>
+
+    <a href="/admin/contratos/nuevo" class="btn">Registrar Contrato</a>
+
+    <a href="/admin/beneficios/actualizar" class="btn">Actualizar Beneficios</a>
+
+    <a href="/admin/pagos/nuevo" class="btn">Registrar Pago</a>
+</div>
+
+</body>
+</html>

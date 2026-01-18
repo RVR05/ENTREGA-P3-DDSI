@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro de Patrocinador</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #8B5CF6;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #6D28D9;
+    }
+    .btn-secondary {
+      background-color: #6c757d;
+      margin-left: 10px;
+    }
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Registro de Patrocinador</h1>
+
+<form action="admin/patrocinadores/nuevo" method="post">
+
+  <div class="form-group">
+    <label for="dni">DNI:</label>
+    <input type="text" id="dni" name="dni" required>
+  </div>
+
+  <div class="form-group">
+    <label for="nombrePersonaContacto">Nombre Persona Contacto:</label>
+    <input type="text" id="nombrePersonaContacto" name="nombrePersonaContacto" required>
+  </div>
+
+  <div class="form-group">
+    <label for="correoElectronicoPersonaContacto">Correo Electrónico:</label>
+    <input type="email" id="correoElectronicoPersonaContacto" name="correoElectronicoPersonaContacto" required>
+  </div>
+
+  <div class="form-group">
+    <label for="numeroTelefono">Teléfono:</label>
+    <input type="text" id="numeroTelefono" name="numeroTelefono" required>
+  </div>
+
+  <div class="form-group">
+    <label for="nombreEmpresa">Nombre Empresa:</label>
+    <input type="text" id="nombreEmpresa" name="nombreEmpresa" required>
+  </div>
+
+  <div class="form-group">
+    <label for="tipoBeneficios">Tipo de Beneficios:</label>
+    <input type="text" id="tipoBeneficios" name="tipoBeneficios" >
+  </div>
+
+  <div class="form-group">
+    <label for="descripcionBeneficios">Descripción Beneficios:</label>
+    <textarea id="descripcionBeneficios" name="descripcionBeneficios" rows="3" ></textarea>
+  </div>
+
+  <button type="submit">Guardar</button>
+  <button type="button" class="btn-secondary" onclick="window.location.href='/patrocinadores/lista'">Cancelar</button>
+</form>
+
+</body>
+</html>
