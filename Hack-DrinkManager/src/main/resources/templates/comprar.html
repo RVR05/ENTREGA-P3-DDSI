@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Comprar Entrada</title>
+  <style>
+    body {
+        text-align: center; /* centra todo horizontalmente */
+        margin-top: 50px;   /* separación arriba */
+        font-family: Arial, sans-serif;
+    }
+    input, button {
+        margin: 5px;
+        padding: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Comprar Entrada</h2>
+
+<form th:action="@{/cliente/menu/comprar}" method="post">
+
+  <label>Evento:</label>
+    <input name="nombreEvento"><br>
+
+  <label>Localización:</label>
+  <input name="locEvento"><br>
+
+  <label>Fecha:</label>
+  <input type="date" name="fechaEvento"><br>
+
+  <label>Nº Entradas:</label>
+  <input type="number" name="numEntradas" min="1"><br>
+
+  <label>Tipo Entrada:</label>
+  <input name="tipoEntrada"><br>
+
+  <label>Método Pago:</label>
+  <select name="metodoPago">
+    <option value="TARJETA">Tarjeta</option>
+    <option value="PAYPAL">PayPal</option>
+  </select><br>
+
+  <label>Nº Tarjeta:</label>
+  <input type="number" name="numeroTarjeta"><br>
+
+  <label>Caducidad:</label>
+  <input type="date" name="caducidadTarjeta"><br>
+
+  <label>CVV:</label>
+  <input type="number" name="cvV" min="100" max="999"><br>
+
+  <button type="submit">Confirmar compra</button>
+</form>
+
+<br>
+<a th:href="@{/cliente/menu}">Volver al menú</a>
+
+</body>
+</html>

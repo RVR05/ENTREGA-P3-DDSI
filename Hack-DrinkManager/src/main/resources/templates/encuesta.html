@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Encuesta</title>
+  <style>
+    body {
+        text-align: center; /* centra todo horizontalmente */
+        margin-top: 50px;   /* separación arriba */
+        font-family: Arial, sans-serif;
+    }
+    input, button {
+        margin: 5px;
+        padding: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Encuesta del Evento</h2>
+
+<form th:action="@{/cliente/menu/encuesta}" method="post">
+
+  <label>Evento:</label>
+  <input type="text" name="nombreEvento" required><br>
+
+  <label>Localización:</label>
+  <input type="text" name="locEvento" required><br>
+
+  <label>Fecha:</label>
+  <input type="date" name="fechaEvento" required><br>
+
+  <label>Opinión:</label><br>
+  <textarea name="respuesta" rows="4" cols="40" required></textarea><br>
+
+  <button type="submit">Enviar encuesta</button>
+</form>
+
+<a th:href="@{/cliente/menu}">Volver al menú</a>
+
+</body>
+</html>

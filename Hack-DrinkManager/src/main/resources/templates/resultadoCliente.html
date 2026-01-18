@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"> <head>
+    <meta charset="UTF-8">
+    <title>Resultado BD</title>
+    <style>
+        body {
+            text-align: center; /* centra todo horizontalmente */
+            margin-top: 50px;   /* separación arriba */
+            font-family: Arial, sans-serif;
+        }
+        input, button {
+            margin: 5px;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Resultado: </h1>
+
+    <p th:text="${mensaje}"></p>
+
+    <a th:href="@{/cliente/menu}">Volver al menú</a>
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Baja Cliente</title>
+  <style>
+    body {
+        text-align: center; /* centra todo horizontalmente */
+        margin-top: 50px;   /* separación arriba */
+        font-family: Arial, sans-serif;
+    }
+    input, button {
+        margin: 5px;
+        padding: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Darse de baja</h2>
+
+<p>
+  <input type="checkbox" name="consentimiento" required>
+  Al solicitar la baja, sus datos se eliminarán de forma inmediata siempre que no tenga entradas pendientes.
+  En caso de existir entradas pendientes, se conservarán únicamente los datos necesarios para cumplir las
+  obligaciones legales o finalizar las transacciones .
+
+</p>
+
+<form th:action="@{/Cliente/Menu/baja}" method="post">
+  <button type="submit">Confirmar baja</button>
+</form>
+
+<a th:href="@{/cliente/menu}">Cancelar</a>
+
+</body>
+</html>

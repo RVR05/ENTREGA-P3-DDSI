@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Atención al Cliente</title>
+    <style>
+        body {
+            text-align: center; /* centra todo horizontalmente */
+            margin-top: 50px;   /* separación arriba */
+            font-family: Arial, sans-serif;
+        }
+        input, button {
+            margin: 5px;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Atención al Cliente</h2>
+
+<form th:action="@{/cliente/menu/atencion}" method="post">
+
+    <label>Tipo de solicitud:</label>
+    <select name="tipoSolicitud" required>
+        <option value="CONSULTA">Consulta</option>
+        <option value="RECLAMACION">Reclamación</option>
+        <option value="SUGERENCIA">Sugerencia</option>
+    </select><br>
+    <label>Comprobación administrativa:</label>
+    <input type="text" name="comprobacionAdmin" required><br>
+    <label>Detalle:</label><br>
+    <textarea name="detalleSolicitud" rows="4" cols="40" required></textarea><br>
+
+    <button type="submit">Enviar solicitud</button>
+</form>
+
+<a th:href="@{/cliente/menu}">Volver al menú</a>
+
+</body>
+</html>

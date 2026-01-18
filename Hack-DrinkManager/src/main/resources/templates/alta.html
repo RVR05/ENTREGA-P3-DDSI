@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Alta Cliente</title>
+    <style>
+        body {
+            text-align: center; /* centra todo horizontalmente */
+            margin-top: 50px;   /* separación arriba */
+            font-family: Arial, sans-serif;
+        }
+        input, button {
+            margin: 5px;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+</form>
+<h1>Alta de Cliente</h1>
+<form th:action="@{/cliente/menu/alta}" method="post">
+    DNI: <input type="text" name="dni" required><br>
+    Correo: <input type="email" name="correo" required><br>
+    Contraseña: <input type="password" name="contrasena" required><br>
+    Nombre: <input type="text" name="nombre" required><br>
+    Apellidos: <input type="text" name="apellidos" required><br>
+    Teléfono: <input type="text" name="telefono" required><br>
+
+    <p>
+        <input type="checkbox" name="consentimiento" required>
+        He leído y acepto que mis datos serán almacenados y utilizados únicamente para la gestión de cuentas,
+        compra de entradas, encuestas y promociones. Puedo ejercer mis derechos de acceso, rectificación,
+        cancelación y oposición.
+    </p>
+    <button type="submit">Registrar Cliente</button>
+</form>
+
+
+</body>
+</html>

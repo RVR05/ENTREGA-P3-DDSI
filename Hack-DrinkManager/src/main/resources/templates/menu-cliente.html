@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"> <head>
+    <meta charset="UTF-8">
+    <title>Menú Gestion de Clientes</title>
+    <style>
+        body {
+             font-family: Arial, sans-serif;
+             text-align: center;
+             margin-top: 50px;
+             background-color: #f4f6f8;
+         }
+
+         h1 {
+             color: black;
+             margin-bottom: 30px;
+         }
+
+         button {
+             background-color: #1a73e8;
+             color: white;
+             border: none;
+             border-radius: 6px;
+             padding: 12px 25px;
+             margin: 10px;
+             font-size: 16px;
+             cursor: pointer;
+             transition: background-color 0.3s;
+         }
+
+         button:hover {
+             background-color: #155ab6;
+         }
+    </style>
+</head>
+<body>
+
+<h1> Gestión de Clientes </h1>
+<form action="/cliente/menu/alta" method="get">
+    <button type="submit">Dar de Alta al Cliente</button>
+</form>
+
+<form action="/cliente/menu/comprar" method="get">
+    <button type="submit">Comprar Entrada</button>
+</form>
+
+<form action="/cliente/menu/modificar" method="get">
+    <button type="submit">Modificar Datos</button>
+</form>
+
+<form action="/cliente/menu/baja" method="get">
+    <button type="submit">Darse de baja</button>
+</form>
+
+<form action="/cliente/menu/encuesta" method="get">
+    <button type="submit">Rellenar Encuesta</button>
+</form>
+
+<form action="/cliente/menu/abono" method="get">
+    <button type="submit">Solicitar Abono</button>
+</form>
+
+<form action="/cliente/menu/atencion" method="get">
+    <button type="submit">Atención al Cliente</button>
+</form>
+
+</body>
+</html>

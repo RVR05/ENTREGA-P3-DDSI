@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Solicitar Abono</title>
+  <style>
+    body {
+        text-align: center; /* centra todo horizontalmente */
+        margin-top: 50px;   /* separación arriba */
+        font-family: Arial, sans-serif;
+    }
+    input, button {
+        margin: 5px;
+        padding: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Solicitud de Abono</h2>
+
+<form th:action="@{/cliente/menu/abono}" method="post">
+
+  <label>Tipo de abono:</label>
+  <select name="tipoAbono" required>
+    <option value="BASICO">Básico</option>
+    <option value="PREMIUM">Premium</option>
+    <option value="VIP">VIP</option>
+  </select><br>
+
+  <label>Comprobación administrativa:</label>
+  <input type="text" name="comprobacionAdmin" required><br>
+
+  <button type="submit">Solicitar abono</button>
+</form>
+
+<a th:href="@{/cliente/menu}">Volver al menú</a>
+
+</body>
+</html>
