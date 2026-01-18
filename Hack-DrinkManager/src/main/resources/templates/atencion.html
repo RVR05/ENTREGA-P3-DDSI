@@ -21,6 +21,9 @@
 
 <form th:action="@{/cliente/menu/atencion}" method="post">
 
+    <label>DNI:</label>
+    <input type="text" name="dni" required><br>
+
     <label>Tipo de solicitud:</label>
     <select name="tipoSolicitud" required>
         <option value="CONSULTA">Consulta</option>
