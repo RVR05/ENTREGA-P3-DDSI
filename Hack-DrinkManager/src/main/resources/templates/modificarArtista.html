@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Modificar Artista</title>
+    <style>
+        /* Estilos idénticos al primer HTML */
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container { background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 12px; } /* Añadido para igualar espacios */
+        label { display: block; margin-bottom: 5px; font-weight: bold; } /* Añadido para igualar espacios */
+        input { width: 95%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        button { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #218838; }
+
+        /* Estilo para el campo que no se puede editar */
+        .readonly-field { background-color: #e9ecef; cursor: not-allowed; }
+        .footer-link { display: block; text-align: center; margin-top: 15px; text-decoration: none; color: #666; font-size: 14px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Modificar Datos del Artista</h2>
+    <form action="/admin/artista/actualizar" method="post">
+
+        <div class="form-group">
+            <label>DNI/NIF (No editable):</label>
+            <input type="text" name="dni" th:value="${dni}" class="readonly-field" readonly>
+        </div>
+
+        <div class="form-group">
+            <label>Nombre:</label>
+            <input type="text" name="nombre" th:value="${nombre}" maxlength="40" required>
+        </div>
+
+        <div class="form-group">
+            <label>Apellidos:</label>
+            <input type="text" name="apellidos" th:value="${apellidos}" maxlength="60" required>
+        </div>
+
+        <div class="form-group">
+            <label>Nuevo Correo electrónico:</label>
+            <input type="email" name="correo" th:value="${correo}" maxlength="50" required>
+        </div>
+
+        <div class="form-group">
+            <label>Teléfono:</label>
+            <input type="text" name="telefono" th:value="${telefono}" maxlength="20" required>
+        </div>
+
+        <div class="form-group">
+            <label>Dirección:</label>
+            <input type="text" name="direccion" th:value="${direccion}" maxlength="100" required>
+        </div>
+
+        <div class="form-group">
+            <label>Caché:</label>
+            <input type="number" name="cache" th:value="${cache}" max="9999999" required>
+        </div>
+
+        <div class="form-group">
+            <label>Género musical:</label>
+            <input type="text" name="genero" th:value="${genero}" maxlength="15" required>
+        </div>
+
+        <button type="submit">Guardar Cambios</button>
+    </form>
+
+</div>
+</body>
+</html>

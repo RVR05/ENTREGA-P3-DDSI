@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Artistas - Hack&Drink</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .contenedor-menu {
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 400px;
+        }
+
+        .logo-placeholder {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        p {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px 0;
+            margin: 12px 0;
+            background-color: #2ecc71; /* Color verde para gestión */
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            box-sizing: border-box;
+        }
+
+        /* Colores temáticos por acción */
+        .btn-alta { background-color: #218838; }
+        .btn-modificar { background-color: #218838; }
+        .btn-baja { background-color: #218838; }
+        .btn-actuacion { background-color: #218838; }
+        .btn-camerino { background-color: #218838; }
+        .btn-contrato { background-color: #218838; }
+        .btn-pago { background-color: #218838; }
+
+
+
+
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            filter: brightness(1.1);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="contenedor-menu">
+    <div class="logo-placeholder"></div>
+    <h2>Gestion de Artistas</h2>
+    <p>Seleccione una operación del sistema</p>
+
+    <a href="/admin/artista/alta" class="btn btn-alta">Dar de Alta Artista</a>
+
+    <a href="/admin/artista/modificar" class="btn btn-modificar">Modificar Datos</a>
+
+    <a href="/admin/artista/baja" class="btn btn-baja">Dar de Baja Artista</a>
+
+    <a href="/admin/artista/actuacion" class="btn btn-actuacion">Añadir actuacion</a>
+
+    <a href="/admin/artista/camerino" class="btn btn-camerino">Añadir camerino</a>
+
+    <a href="/admin/artista/contrato" class="btn btn-contrato">Asignar Contrato</a>
+
+    <a href="/admin/artista/pago" class="btn btn-pago">Realizar pago</a>
+
+</div>
+
+</body>
+</html>

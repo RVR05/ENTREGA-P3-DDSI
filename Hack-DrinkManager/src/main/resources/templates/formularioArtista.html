@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Artista</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container { background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input { width: 95%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        button { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #218838; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Añadir Nuevo Artista</h2>
+    <form action="/admin/artista/guardar" method="post">
+        <div class="form-group">
+            <label>Nombre:</label>
+            <input type="text" name="nombre" maxlength="40" required>
+        </div>
+        <div class="form-group">
+            <label>Apellidos:</label>
+            <input type="text" name="apellidos" maxlength="60" required>
+        </div>
+        <div class="form-group">
+            <label>DNI/NIF:</label>
+            <input type="text" name="dni" maxlength="9" placeholder="Ej: 12345678Z" required>
+        </div>
+        <div class="form-group">
+            <label>Correo electrónico:</label>
+            <input type="email" name="correo" maxlength="50" required>
+        </div>
+        <div class="form-group">
+            <label>Teléfono:</label>
+            <input type="text" name="telefono" maxlength="20" required>
+        </div>
+        <div class="form-group">
+            <label>Dirección:</label>
+            <input type="text" name="direccion" maxlength="100" required>
+        </div>
+        <div class="form-group">
+            <label>Caché:</label>
+            <input type="number" name="cache" max="9999999" required>
+        </div>
+        <div class="form-group">
+            <label>Género musical:</label>
+            <input type="text" name="genero" maxlength="15" required>
+        </div>
+        <button type="submit">Registrar Artista</button>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Modificar Artista</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container { background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input { width: 95%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        button { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #218838; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Modificar Artista</h2>
+    <p>Introduce el DNI del artista que deseas modificar:</p>
+
+    <form action="/admin/artista/cargar-datos" method="post">
+        <input type="text" name="dni" placeholder="12345678Z" required>
+        <br><br>
+        <button type="submit">Buscar Datos</button>
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Baja de Artista</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container { background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input { width: 95%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        /* Estilo para el botón de baja (rojo para indicar peligro/eliminación) */
+        button { width: 100%; padding: 10px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #c82333; }
+        .footer-link { display: block; text-align: center; margin-top: 15px; text-decoration: none; color: #666; font-size: 14px; }
+        .warning { color: #856404; background-color: #fff3cd; border: 1px solid #ffeeba; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 14px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Solicitar Baja de Artista</h2>
+
+    <div class="warning">
+        <strong>Aviso:</strong> Esta acción es irreversible. El artista no podrá ser eliminado si tiene actuaciones pendientes.
+    </div>
+
+    <form action="/admin/artista/eliminar" method="post">
+        <div class="form-group">
+            <label>DNI/NIF del Artista:</label>
+            <input type="text" name="dni" maxlength="9" placeholder="Ej: 12345678Z" required>
+        </div>
+
+        <div class="form-group">
+            <label>Correo electrónico asociado:</label>
+            <input type="email" name="correo" maxlength="50" placeholder="correo@ejemplo.com" required>
+        </div>
+
+        <button type="submit">Confirmar Baja Definitiva</button>
+    </form>
+
+</div>
+</body>
+</html>
