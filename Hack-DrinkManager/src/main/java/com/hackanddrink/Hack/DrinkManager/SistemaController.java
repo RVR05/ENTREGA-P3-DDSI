@@ -593,5 +593,675 @@ public class SistemaController {
     //----FIN DE LAS OPERACIONES DE SERVICIOS----
 
 
+    //----INICIO GESTION DE ARTISTAS----//
+
+     //mostramos el formulario del menu de gestion de artistas
+    @GetMapping("/admin/artista/menu")
+    public String mostrarMenuArtistas() {
+
+        return "menuArtistas";
+
+    }
+
+
+
+    //mostramos el formulario de dar de alta
+    @GetMapping("/admin/artista/alta")
+    public String mostrarFormulario() {
+
+        return "formularioArtista";
+
+    }
+
+    //post para guardar el artista nuevo
+    @PostMapping("/admin/artista/guardar")
+    public String guardarArtista(
+
+            @RequestParam String nombre,
+            @RequestParam String apellidos,
+            @RequestParam String dni,
+            @RequestParam String correo,
+            @RequestParam String telefono,
+            @RequestParam String direccion,
+            @RequestParam int cache,
+            @RequestParam String genero,
+
+            Model model) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+
+            conn.setAutoCommit(false);
+
+            //aqui validamos la restriccion semantica 2.1 y 2.2
+            String sqlCheck = "SELECT COUNT(*) FROM ARTISTAS WHERE DNI_NIF = ? OR CORREO_ELECTRONICO = ?";
+
+            try (PreparedStatement psCheck = conn.prepareStatement(sqlCheck)) {
+
+                psCheck.setString(1, dni);
+                psCheck.setString(2, correo);
+                ResultSet rs = psCheck.executeQuery();
+
+                if (rs.next() && rs.getInt(1) > 0) {
+                    model.addAttribute("mensaje", "Ya existe un artista con ese DNI o correo electrónico.");
+                    return "resultadoArtista";
+                }
+
+            }
+
+            //hacemos la insercion de el artista
+            String sqlInsert = "INSERT INTO ARTISTAS (NOMBRE, APELLIDOS, DNI_NIF, CORREO_ELECTRONICO, TELEFONO, DIRECCION, CACHE, GENERO_MUSICAL) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+            try (PreparedStatement ps = conn.prepareStatement(sqlInsert)) {
+
+                ps.setString(1, nombre);
+                ps.setString(2, apellidos);
+                ps.setString(3, dni);
+                ps.setString(4, correo);
+                ps.setString(5, telefono);
+                ps.setString(6, direccion);
+                ps.setInt(7, cache);
+                ps.setString(8, genero);
+
+                ps.executeUpdate();
+                conn.commit();
+
+                model.addAttribute("mensaje", "Artista " + nombre + " registrado con éxito.");
+                return "resultadoArtista";
+
+            } catch (SQLException e) {
+
+                conn.rollback();
+                throw e;
+
+            }
+        }
+    }
+
+
+    //con esto mostramosel formulario de buscar un artista para editar identificandolo con su DNI
+    @GetMapping("/admin/artista/modificar")
+    public String mostrarBuscadorModificar() {
+
+        return "buscarArtistaParaEditar";
+
+    }
+
+
+    //con este post lo que hacemos es cargar los datos del artista relacionados con el DNI que hemos buscado para realizar la modificacion de lo que queramos
+    @PostMapping("/admin/artista/cargar-datos")
+    public String cargarDatosParaEdicion(@RequestParam String dni, Model model) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+
+            String sql = "SELECT * FROM ARTISTAS WHERE DNI_NIF = ?";
+
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+
+                ps.setString(1, dni);
+                ResultSet rs = ps.executeQuery();
+
+                if (rs.next()) {
+
+                    model.addAttribute("dni", rs.getString("DNI_NIF"));
+                    model.addAttribute("nombre", rs.getString("NOMBRE"));
+                    model.addAttribute("apellidos", rs.getString("APELLIDOS"));
+                    model.addAttribute("correo", rs.getString("CORREO_ELECTRONICO"));
+                    model.addAttribute("telefono", rs.getString("TELEFONO"));
+                    model.addAttribute("direccion", rs.getString("DIRECCION"));
+                    model.addAttribute("cache", rs.getInt("CACHE"));
+                    model.addAttribute("genero", rs.getString("GENERO_MUSICAL"));
+
+                    return "modificarArtista"; //el formulario con los datos rellenos
+
+                } else {
+                    //caso de que el DNI que hemos buscado no existe
+                    model.addAttribute("mensaje", "No existe ningún artista con el DNI: " + dni);
+                    return "resultadoArtista";
+                }
+            }
+        }
+    }
+
+    //cogemos los datos con las modificaciones y actualizamos el artista
+    @PostMapping("/admin/artista/actualizar")
+    public String procesarActualizacion(
+
+            @RequestParam String dni,
+            @RequestParam String nombre,
+            @RequestParam String apellidos,
+            @RequestParam String correo,
+            @RequestParam String telefono,
+            @RequestParam String direccion,
+            @RequestParam int cache,
+            @RequestParam String genero,
+
+            Model model) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+
+            conn.setAutoCommit(false);
+
+            //validamos que el correo que se ha introducido ahora no este asociado a otro artista existente
+            String sqlCheckCorreo = "SELECT COUNT(*) FROM ARTISTAS WHERE CORREO_ELECTRONICO = ? AND DNI_NIF != ?";
+
+            try (PreparedStatement psCheck = conn.prepareStatement(sqlCheckCorreo)) {
+
+                psCheck.setString(1, correo);
+                psCheck.setString(2, dni);
+                ResultSet rs = psCheck.executeQuery();
+
+                if (rs.next() && rs.getInt(1) > 0) {
+                    //sacamos el error
+                    model.addAttribute("mensaje", "El correo electrónico ya está en uso por otro artista.");
+                    return "resultadoArtista";
+
+                }
+            }
+
+
+            String sqlUpdate = "UPDATE ARTISTAS SET NOMBRE = ?, APELLIDOS = ?, CORREO_ELECTRONICO = ?, " +
+                    "TELEFONO = ?, DIRECCION = ?, CACHE = ?, GENERO_MUSICAL = ? WHERE DNI_NIF = ?";
+
+            try (PreparedStatement ps = conn.prepareStatement(sqlUpdate)) {
+
+                ps.setString(1, nombre);
+                ps.setString(2, apellidos);
+                ps.setString(3, correo);
+                ps.setString(4, telefono);
+                ps.setString(5, direccion);
+                ps.setInt(6, cache);
+                ps.setString(7, genero);
+                ps.setString(8, dni);
+
+                ps.executeUpdate();
+                conn.commit();
+
+                model.addAttribute("mensaje", "Datos del artista actualizados correctamente.");
+                return "resultadoArtista";
+
+            } catch (SQLException e) {
+
+                conn.rollback();
+                throw e;
+
+            }
+        }
+    }
+
+
+    //formulario dar de baja
+    @GetMapping("/admin/artista/baja")
+    public String mostrarFormularioBaja() {
+
+        return "bajaArtista";
+
+    }
+
+    //eliminamos el artista asociado a ese dni y correo pero antes comprobamos ciertas cosas
+    @PostMapping("/admin/artista/eliminar")
+    public String procesarBaja(@RequestParam String dni, @RequestParam String correo, Model model) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+
+            //comprobamos si tiene asociadas actuaciones ya que en ese caso no se puede eliminar el artista
+            String sqlCheck = "SELECT COUNT(*) FROM Asociado WHERE DNI_NIF = ? AND HoraInicio2 >= CURRENT_TIMESTAMP";
+
+            try (PreparedStatement psCheck = conn.prepareStatement(sqlCheck)) {
+
+                psCheck.setString(1, dni);
+                ResultSet rs = psCheck.executeQuery();
+
+                if (rs.next() && rs.getInt(1) > 0) {
+
+                    model.addAttribute("mensaje", "No se puede dar de baja: El artista tiene actuaciones pendientes en la tabla Asociado.");
+                    return "resultadoArtista";
+
+                }
+            }
+
+            try {
+
+                //borramos incluido dependencias en asociado, ocupa y firma
+                String[] tablasDependientes = {"Ocupa", "Asociado", "Firma"};
+                for (String tabla : tablasDependientes) {
+
+                    try (PreparedStatement psDep = conn.prepareStatement("DELETE FROM " + tabla + " WHERE DNI_NIF = ?")) {
+
+                        psDep.setString(1, dni);
+                        psDep.executeUpdate();
+
+                    }
+                }
+
+                //borramos el artista
+                String sqlDeleteArtista = "DELETE FROM ARTISTAS WHERE DNI_NIF = ? AND CORREO_ELECTRONICO = ?";
+
+                try (PreparedStatement psDelete = conn.prepareStatement(sqlDeleteArtista)) {
+
+                    psDelete.setString(1, dni);
+                    psDelete.setString(2, correo);
+
+                    int filas = psDelete.executeUpdate();
+
+                    if (filas > 0) {
+
+                        conn.commit();
+                        model.addAttribute("mensaje", "Artista eliminado con éxito.");
+
+                    } else {
+
+                        conn.rollback();
+                        model.addAttribute("mensaje", "Los datos de DNI y Correo no coinciden.");
+
+                    }
+                }
+
+            } catch (SQLException e) {
+
+                conn.rollback();
+                throw e;
+
+            }
+            return "resultadoArtista";
+        }
+    }
+
+
+    //formulario pa el registro de actuaciones
+    @GetMapping("/admin/artista/actuacion")
+    public String mostrarFormularioActuacion() {
+
+        return "formularioActuacion";
+
+    }
+
+    //post guardamos la actuacion
+    @PostMapping("/admin/artista/guardarActuacion")
+    public String guardarActuacion(
+
+            @RequestParam String dni,
+            @RequestParam String fecha,
+            @RequestParam String horaInicio,
+            @RequestParam String horaFin,
+            @RequestParam int escenario,
+            Model model) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+
+            conn.setAutoCommit(false);
+
+            //fechas inicio y fin
+            String inicioCompleto = fecha + " " + horaInicio + ":00";
+            String finCompleto = fecha + " " + horaFin + ":00";
+
+            //comprobamos que el escenario exista
+            String sqlExisteEscenario = "SELECT COUNT(*) FROM Escenarios WHERE NumeroEscenario = ?";
+            try (PreparedStatement psEsc = conn.prepareStatement(sqlExisteEscenario)) {
+
+                psEsc.setInt(1, escenario);
+                ResultSet rsEsc = psEsc.executeQuery();
+
+                if (rsEsc.next() && rsEsc.getInt(1) == 0) {
+
+                    model.addAttribute("mensaje", "El escenario número " + escenario + " no existe.");
+                    return "resultadoArtista";
+
+                }
+            }
+
+            //comprobamos que ese escenario no este ocupado en ese rango de horas para eviar solapamientos
+            String sqlCheckConflict = "SELECT COUNT(*) FROM Asociado " + "WHERE NumeroEscenario = ? " + "AND ((HoraInicio2 <= TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') AND HoraFin2 > TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS')) " +
+                    "OR (HoraInicio2 < TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') AND HoraFin2 >= TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS')))";
+
+            try (PreparedStatement psCheck = conn.prepareStatement(sqlCheckConflict)) {
+
+                psCheck.setInt(1, escenario);
+                psCheck.setString(2, inicioCompleto);
+                psCheck.setString(3, inicioCompleto);
+                psCheck.setString(4, finCompleto);
+                psCheck.setString(5, finCompleto);
+
+                ResultSet rs = psCheck.executeQuery();
+
+                if (rs.next() && rs.getInt(1) > 0) {
+
+                    model.addAttribute("mensaje", "El escenario ya tiene una actuación en esa franja horaria.");
+                    return "resultadoArtista";
+
+                }
+            }
+
+            //inserccion
+            String sqlInsert = "INSERT INTO Asociado (DNI_NIF, HoraInicio2, HoraFin2, NumeroEscenario) " + "VALUES (?, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), ?)";
+
+            try (PreparedStatement ps = conn.prepareStatement(sqlInsert)) {
+
+                ps.setString(1, dni);
+                ps.setString(2, inicioCompleto);
+                ps.setString(3, finCompleto);
+                ps.setInt(4, escenario);
+
+                ps.executeUpdate();
+                conn.commit(); // Confirmamos los cambios en la BD
+
+                model.addAttribute("mensaje", "Actuación registrada con éxito en el escenario " + escenario);
+                return "resultadoArtista";
+
+            } catch (SQLException e) {
+
+                conn.rollback();
+                throw e;
+
+            }
+        }
+    }
+
+    //asignacion camerinos parecido a escenarios
+    @GetMapping("/admin/artista/camerino")
+    public String mostrarFormularioCamerino() {
+
+        return "formularioCamerino";
+
+    }
+
+    @PostMapping("/admin/artista/asignarCamerino")
+    public String asignarCamerino(
+
+            @RequestParam String dni,
+            @RequestParam String fecha,
+            @RequestParam String horaInicio,
+            @RequestParam String horaFin,
+            @RequestParam int idCamerino,
+            Model model) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+
+            conn.setAutoCommit(false);
+
+            String inicioCompleto = fecha + " " + horaInicio + ":00";
+            String finCompleto = fecha + " " + horaFin + ":00";
+
+            //comprobamos que el artista exista
+            String sqlExisteArt = "SELECT COUNT(*) FROM ARTISTAS WHERE DNI_NIF = ?";
+
+            try (PreparedStatement ps = conn.prepareStatement(sqlExisteArt)) {
+
+                ps.setString(1, dni);
+                ResultSet rs = ps.executeQuery();
+
+                if (rs.next() && rs.getInt(1) == 0) {
+
+                    model.addAttribute("mensaje", "El artista no existe.");
+                    return "resultadoArtista";
+
+                }
+            }
+
+            //comprobamos tb el camerino
+            String sqlExisteCam = "SELECT COUNT(*) FROM Camerinos WHERE Identificacion = ?";
+
+            try (PreparedStatement ps = conn.prepareStatement(sqlExisteCam)) {
+
+                ps.setInt(1, idCamerino);
+                ResultSet rs = ps.executeQuery();
+
+                if (rs.next() && rs.getInt(1) == 0) {
+
+                    model.addAttribute("mensaje", "El camerino " + idCamerino + " no existe.");
+                    return "resultadoArtista";
+
+                }
+            }
+
+            //y aqui tb evitamos solapamientos en los camerinos
+            String sqlCheckConflict = "SELECT COUNT(*) FROM Ocupa " + "WHERE Identificacion = ? " + "AND ((HoraInicio <= TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') AND HoraFin > TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS')) " +
+                    "OR (HoraInicio < TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS') AND HoraFin >= TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS')))";
+
+            try (PreparedStatement psCheck = conn.prepareStatement(sqlCheckConflict)) {
+
+                psCheck.setInt(1, idCamerino);
+                psCheck.setString(2, inicioCompleto);
+                psCheck.setString(3, inicioCompleto);
+                psCheck.setString(4, finCompleto);
+                psCheck.setString(5, finCompleto);
+
+                ResultSet rs = psCheck.executeQuery();
+
+                if (rs.next() && rs.getInt(1) > 0) {
+
+                    model.addAttribute("mensaje", "El camerino " + idCamerino + " ya está ocupado en ese horario.");
+                    return "resultadoArtista";
+
+                }
+            }
+
+            //insercciom
+            String sqlInsert = "INSERT INTO Ocupa (DNI_NIF, HoraInicio, HoraFin, Identificacion) " + "VALUES (?, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), ?)";
+
+            try (PreparedStatement ps = conn.prepareStatement(sqlInsert)) {
+
+                ps.setString(1, dni);
+                ps.setString(2, inicioCompleto);
+                ps.setString(3, finCompleto);
+                ps.setInt(4, idCamerino);
+
+                ps.executeUpdate();
+                conn.commit();
+
+                model.addAttribute("mensaje", "Camerino " + idCamerino + " asignado correctamente.");
+                return "resultadoArtista";
+
+            } catch (SQLException e) {
+
+                conn.rollback();
+                throw e;
+
+            }
+        }
+    }
+
+    //mostamos el formulario de contratos
+    @GetMapping("/admin/artista/contrato")
+    public String mostrarFormularioContrato() {
+
+        return "formularioContrato";
+
+    }
+
+    //guardamos el contrato y la parte de firma
+    @PostMapping("/admin/artista/guardarContrato")
+    public String guardarContrato(
+
+            @RequestParam int id,
+            @RequestParam String dni,
+            @RequestParam String fechaInicio,
+            @RequestParam String fechaFin,
+            @RequestParam double importe,
+            @RequestParam String datosBancarios,
+            @RequestParam String metodoPago,
+            @RequestParam String tipoPago,
+            Model model) throws SQLException {
+
+        //fechafin del contrato tiene que ser posterior a fecha inicio
+        if (fechaInicio.compareTo(fechaFin) >= 0) {
+
+            model.addAttribute("mensaje", "La fecha de fin debe ser posterior a la de inicio.");
+            return "resultadoArtista";
+
+        }
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+
+            //id de contrato tiene que ser unico
+            String sqlCheckId = "SELECT COUNT(*) FROM Contratos WHERE ID = ?";
+            try (PreparedStatement ps = conn.prepareStatement(sqlCheckId)) {
+
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
+
+                if (rs.next() && rs.getInt(1) > 0) {
+
+                    model.addAttribute("mensaje", "El ID de contrato ya existe.");
+                    return "resultadoArtista";
+
+                }
+            }
+
+            //comprobacion artista
+            String sqlCheckArt = "SELECT COUNT(*) FROM Artistas WHERE DNI_NIF = ?";
+            try (PreparedStatement ps = conn.prepareStatement(sqlCheckArt)) {
+
+                ps.setString(1, dni);
+                ResultSet rs = ps.executeQuery();
+
+                if (rs.next() && rs.getInt(1) == 0) {
+
+                    model.addAttribute("mensaje", "No existe ningún artista con el DNI proporcionado.");
+                    return "resultadoArtista";
+                }
+            }
+
+            try {
+                //insertamos la parte de contratos
+                String sqlContrato = "INSERT INTO Contratos (ID, ImporteAcordado, FechaInicio, FechaFin, " + "MetodoDePago, TipoDePago, DatosBancarios) VALUES (?, ?, TO_DATE(?, 'YYYY-MM-DD'), " + "TO_DATE(?, 'YYYY-MM-DD'), ?, ?, ?)";
+
+                try (PreparedStatement ps = conn.prepareStatement(sqlContrato)) {
+
+                    ps.setInt(1, id);
+                    ps.setDouble(2, importe);
+                    ps.setString(3, fechaInicio);
+                    ps.setString(4, fechaFin);
+                    ps.setString(5, metodoPago);
+                    ps.setString(6, tipoPago);
+                    ps.setString(7, datosBancarios);
+                    ps.executeUpdate();
+
+                }
+
+                //ahora firma
+                String sqlFirma = "INSERT INTO Firma (ID, DNI_NIF) VALUES (?, ?)";
+                try (PreparedStatement ps = conn.prepareStatement(sqlFirma)) {
+
+                    ps.setInt(1, id);
+                    ps.setString(2, dni);
+                    ps.executeUpdate();
+
+                }
+
+                conn.commit(); // Confirmamos ambas inserciones
+                model.addAttribute("mensaje", "Contrato " + id + " firmado correctamente por el artista " + dni);
+
+            } catch (SQLException e) {
+
+                conn.rollback();
+                throw e;
+
+            }
+            return "resultadoArtista";
+        }
+    }
+
+    //formulario pagos
+    @GetMapping("/admin/artista/pago")
+    public String mostrarFormularioPagos() {
+
+        return "formularioPagos";
+
+    }
+
+
+
+    //post de pagos
+    @PostMapping("/admin/artista/registrarPago")
+    public String registrarPago(
+
+            @RequestParam int id,
+            @RequestParam int numPago,
+            Model model) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+
+            //buscamos contrato
+            String sqlContrato = "SELECT TIPODEPAGO, DURACIONDELFRACCIONADO FROM Contratos WHERE ID = ?";
+            String tipoPago = null;
+            int duracionMax = 0;
+
+            try (PreparedStatement ps = conn.prepareStatement(sqlContrato)) {
+
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
+
+                if (rs.next()) {
+
+                    tipoPago = rs.getString("TIPODEPAGO");
+                    duracionMax = rs.getInt("DURACIONDELFRACCIONADO");
+
+                } else {
+
+                    model.addAttribute("mensaje", "El contrato con ID " + id + " no existe.");
+                    return "resultadoArtista";
+                }
+            }
+
+            //nos aseguramos de que el tipo de pago este relleno, poniendo un por defecto
+            if (tipoPago == null) {
+                tipoPago = "Total";
+            }
+
+            //si no es fraccionado, la duracion debe ser 1
+            if (!tipoPago.equalsIgnoreCase("Fraccionado") && duracionMax > 1) {
+                model.addAttribute("mensaje", "La duración no puede ser mayor de 1 porque el tipo de pago no es fraccionado.");
+                return "resultadoArtista";
+            }
+
+            //NumPago debe ser menor o igual que duración del fraccionado
+            if (numPago > duracionMax) {
+
+                model.addAttribute("mensaje", "El número de pago (" + numPago + ") no puede ser superior a la duración pactada (" + duracionMax + ").");
+                return "resultadoArtista";
+
+            }
+
+            //no repetir el numero de pago de un contrato
+            String sqlCheckDuplicado = "SELECT COUNT(*) FROM Pagos WHERE ID = ? AND NumPago = ?";
+            try (PreparedStatement ps = conn.prepareStatement(sqlCheckDuplicado)) {
+
+                ps.setInt(1, id);
+                ps.setInt(2, numPago);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next() && rs.getInt(1) > 0) {
+
+                    model.addAttribute("mensaje", "El pago número " + numPago + " para el contrato " + id + " ya está registrado.");
+                    return "resultadoArtista";
+
+                }
+            }
+
+            //insertamos el pago
+            String sqlInsertPago = "INSERT INTO Pagos (ID, NumPago) VALUES (?, ?)";
+            try (PreparedStatement ps = conn.prepareStatement(sqlInsertPago)) {
+
+                ps.setInt(1, id);
+                ps.setInt(2, numPago);
+                ps.executeUpdate();
+                conn.commit();
+
+                model.addAttribute("mensaje", "Pago número " + numPago + " del contrato " + id + " registrado con éxito.");
+                return "resultadoArtista";
+
+            } catch (SQLException e) {
+
+                conn.rollback();
+                throw e;
+
+            }
+        }
+    }
+
+    //----FIN-GESTION-ARTISTAS----//
+
 }
 
