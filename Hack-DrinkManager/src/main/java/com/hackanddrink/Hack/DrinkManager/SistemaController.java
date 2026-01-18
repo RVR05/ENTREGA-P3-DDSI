@@ -1294,7 +1294,7 @@ public class SistemaController {
     }
 
     @GetMapping("/cliente/menu/baja")
-    public String mostrarFormularioBaja() {
+    public String mostrarFormularioBaja_() {
 
         return "baja";
     }
@@ -1828,7 +1828,7 @@ public class SistemaController {
     // ========== RF3.3 - REGISTRO DE CONTRATOS ==========
 
     @GetMapping("/admin/contratos/nuevo")
-    public String mostrarFormularioContrato() {
+    public String mostrarFormularioContrato_() {
         return "formulario-contrato";
     }
 
