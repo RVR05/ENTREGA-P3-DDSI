@@ -9,6 +9,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
+@SessionAttributes({"nombreMapa", "detallesMapa", "posicionMapa",
+        "descripcionPermisos", "tipoPermisos",
+        "nombrePersonal", "correoPersonal"})
+
 @Controller
 public class SistemaController {
 
@@ -1597,6 +1601,136 @@ public class SistemaController {
 
 
     //----FIN-GESTION-CLIENTES----//
+
+    //----INICIO-GESTION-INFRAESTRUCTURA----//
+
+    @GetMapping("/indiceAdri-html")
+    public String indiceHTML(Model model) throws SQLException {
+        return "infraestructura-opciones.html";
+    }
+
+    @GetMapping("/infraestructuraaveria")
+    public String infraestructuraaveria(Model model) throws SQLException {
+        return "infraestructuraaveria";
+    }
+    @GetMapping("/infraestructurafestival")
+    public String infraestructurafestival(Model model) throws SQLException {
+        return "infraestructurafestival";
+    }
+
+    @PostMapping("/actualizarIDFestival")
+    public String actualizarTexto(@RequestParam("TextoIDFestival") String texto, Model model) throws SQLException {
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+            String sqlMapa = "SELECT * FROM MAPA WHERE Id = ?";
+            String sqlPermisos = "SELECT * FROM PERMISOS WHERE IdPermiso = ?";
+
+            try (PreparedStatement psMapa = conn.prepareStatement(sqlMapa);
+                 PreparedStatement psPermisos = conn.prepareStatement(sqlPermisos)) {
+                psMapa.setString(1, texto);
+                psPermisos.setString(1, texto);
+
+                ResultSet rsMapa = psMapa.executeQuery();
+                ResultSet rsPermisos = psPermisos.executeQuery();
+
+                if (rsMapa.next() && rsPermisos.next()) {
+
+                    String nombreMapa = rsMapa.getString(2);
+                    String detallesMapa = rsMapa.getString(3);
+                    String posicionMapa = rsMapa.getString(4);
+
+                    String descripcionPermisos = rsPermisos.getString(2);
+                    String TipoPermisos = rsPermisos.getString(3);
+
+                    conn.commit();
+
+                    //En lugar de devolver el texto directamente, lo guardamos en el 'modelo'
+                    //"mensaje" será la variable que usaremos luego en el HTML
+                    model.addAttribute("nombreMapa", nombreMapa);
+                    model.addAttribute("detallesMapa", detallesMapa);
+                    model.addAttribute("posicionMapa", posicionMapa);
+
+                    model.addAttribute("descripcionPermisos", descripcionPermisos);
+                    model.addAttribute("tipoPermisos", TipoPermisos);
+
+                    //Devolvemos el NOMBRE del archivo HTML (sin .html)
+                    return "infraestructurafestival";
+                }
+            }
+
+            //Si falla o no encuentra nada
+            model.addAttribute("mensaje", "No se encontraron datos");
+            return "resultado"; //Devolvemos la misma plantilla
+        }
+    }
+
+
+    @PostMapping("/actualizarIDPersonal")
+    public String actualizarIDPersonal (@RequestParam("TextoIDPersonal") String texto, Model model) throws SQLException {
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false); // Asegúrate de manejar la transacción
+            String sqlPersonal = "SELECT * FROM PERSONALDELFESTIVAL WHERE IdPersonal = ?";
+
+            try (PreparedStatement psPersonal = conn.prepareStatement(sqlPersonal)) {
+                psPersonal.setString(1, texto);
+                try (ResultSet rsPersonal = psPersonal.executeQuery()) {
+                    if (rsPersonal.next()) {
+                        // Extraer datos de la BD
+                        String nombrePersonal = rsPersonal.getString(2);
+                        String correoPersonal = rsPersonal.getString(3);
+
+                        conn.commit(); // Confirmar cambios
+
+                        // Agregar datos al modelo
+                        model.addAttribute("nombrePersonal", nombrePersonal);
+                        model.addAttribute("correoPersonal", correoPersonal);
+
+                        return "infraestructuraaveria"; // Enviar a la página index.html
+                    }
+                }
+            }
+        }
+
+
+        // Si no encuentra ningún dato
+        model.addAttribute("mensaje", "No se encontraron datos");
+        return "resultado"; // Devuelve la página resultado.html
+    }
+
+    @PostMapping("/insertarAveria")
+    public String insertarAveria (@RequestParam("TextoAveria") String texto, Model model) throws SQLException {
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false); // Asegúrate de manejar la transacción
+            String sqlInsert = "INSERT INTO AVERIAS VALUES (?, ?)";
+            String sqlGetCount = "SELECT COUNT(*) FROM AVERIAS";
+
+            try (PreparedStatement psInsert = conn.prepareStatement(sqlInsert);
+                 PreparedStatement psGetCount = conn.prepareStatement(sqlGetCount);) {
+
+                int count = -1;
+                try (ResultSet rsGetCount = psGetCount.executeQuery()) {
+                    if (rsGetCount.next()) {
+                        count = rsGetCount.getInt(1);
+                    }
+                }
+
+                psInsert.setString(1,String.valueOf(count+1) );
+                psInsert.setString(2, texto);
+
+                try (ResultSet rsInsert = psInsert.executeQuery()){
+
+                    conn.commit(); // Confirmar cambios
+
+                    return "infraestructuraaveria"; // Enviar a la página index.html
+                }
+
+            }
+        }
+
+    }
+    
+    //----FIN-GESTION-INFRAESTRUCTURA----//
 
 }
 
