@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="RocketCake">
+    <title></title>
+    <style type="text/css">
+        h1, h2, h3 { margin:0; padding:0; font-weight:normal; font-style:normal; }
+        a { color:#5D5D9E; }
+        a:visited { color:#5D5D9E; }
+        a:active { color:#5C615E; }
+        a:hover { color:#B2B3B4; }
+        @media only screen and (max-width: 600px)
+        {
+            #container_798910f0 { width:100% !important;  }
+            #container_30174d59 { width:100% !important;  }
+            #container_4c46cf44 { width:100% !important;  }
+        }
+        @media only screen and (max-width: 400px)
+        {
+            #container_10e32479 { width:100% !important;  }
+            #container_30ba40bc { width:100% !important;  }
+        }
+    </style>
+</head>
+<body style="background-color:#FFFFFF; padding:0;  margin: 0;">
+<div style="text-align:center;">
+    <div style="vertical-align: top; position:relative; display: inline-block; width:100%; min-height:150px; background-color:#0080C0; " id="container_e4bf9ac">
+        <div style="margin: 10px; display: block; " id="container_e4bf9ac_padding" >
+            <div style="text-align:center;">
+                <span style="font-size:12pt; font-family:Arial, Helvetica, sans-serif; color:#000000; "><br/><br/><br/><br/></span>
+                <h1 style="vertical-align: bottom; position:relative; display: inline-block; background:none; font-size:40pt; font-family:Arial, Helvetica, sans-serif; color:#FFFFFF; text-align:left; font-weight:bold; " id="heading_49364a9">Subsistema Infraestructura</h1>        </div>
+            <div style="text-align:left;">
+                <span style="font-size:12pt; font-family:Arial, Helvetica, sans-serif; color:#000000; "><br/><br/></span>
+            </div>
+            <div style="text-align:center;">
+                <h3 style="vertical-align: bottom; position:relative; display: inline-block; background:none; font-size:14pt; font-family:Arial, Helvetica, sans-serif; color:#FFFFFF; text-align:center; font-weight:bold; " id="heading_7d1752af">Adrián Ros Moya</h3>        </div>
+            <div style="text-align:left;">
+                <span style="font-size:12pt; font-family:Arial, Helvetica, sans-serif; color:#000000; "><br/><br/></span>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+    </div>
+</div>
+<div style="text-align:left;">
+    <div style="vertical-align: top; position:relative; display: inline-block; width:100%; min-height:150px; background-color:#EEC9F7; " id="container_7a1f4a7c">
+        <div style="margin: 10px; display: block; " id="container_7a1f4a7c_padding" >
+            <div style="text-align:left;">
+                <div style="vertical-align: top; position:relative; display: inline-block; width:100%; min-height:150px; background:none; " id="container_365f079f">
+                    <div style="margin: 10px; display: block; " id="container_365f079f_padding" >
+                        <div style="text-align:left;">
+                            <div style="vertical-align: top; position:relative; display: inline-block; width:15%; min-height:150px; background:none; " id="container_798910f0">
+                                <div style="margin: 10px; display: block; " id="container_798910f0_padding" >
+                                    <div style="text-align:left;">
+
+                                        <!-- ID del festival-->
+                                        <form th:action="@{/actualizarIDFestival}" method="post">
+
+                                            <label for="IDFestival">Inserte IDFestival:</label>
+                                            <input type="text" id="IDFestival" name="TextoIDFestival"/>
+
+                                        </form>
+
+                                        <span style="font-size:12pt; font-family:Arial, Helvetica, sans-serif; color:#000000; "><br/></span>
+                                    </div>
+                                    <div style="clear:both"></div>
+                                </div>
+                            </div>
+                            <div style="vertical-align: top; position:relative; display: inline-block; width:33%; min-height:150px; background:none; " id="container_30174d59">
+                                <div style="margin: 10px; display: block; " id="container_30174d59_padding" >
+                                    <div style="text-align:left;">
+                                        <span style="font-size:12pt; font-family:Arial, Helvetica, sans-serif; color:#000000; font-weight:bold; ">Permiso Asociado:</span><span style="font-size:12pt; font-family:Arial, Helvetica, sans-serif; color:#000000; ">
+
+                                        <br/>
+                                        <!-- Permisos asociados, Tipo-->
+                                        <p th:if="${tipoPermisos != null}"> Tipo: <span th:text="${tipoPermisos}"></span></p>
+
+                                        <!-- Permisos asociados, Descripccion-->
+                                        <p th:if="${descripcionPermisos != null}"> Descripción: <span th:text="${descripcionPermisos}"></span></p>
+
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="vertical-align: top; position:relative; display: inline-block; width:33%; min-height:150px; background:none; " id="container_4c46cf44">
+                                <div style="margin: 10px; display: block; " id="container_4c46cf44_padding" >
+                                    <div style="text-align:left;">
+                                        <span style="font-size:12pt; font-family:Arial, Helvetica, sans-serif; color:#000000; font-weight:bold; ">Mapa Asociado:</span><span style="font-size:12pt; font-family:Arial, Helvetica, sans-serif; color:#000000; ">
+
+                                        <br/>
+                                        <!-- Mapa asociado, Nombre-->
+                                        <p th:if="${nombreMapa != null}"> Nombre: <span th:text="${nombreMapa}"></span></p>
+
+                                        <!-- Mapa asociado, Detalles-->
+                                        <p th:if="${detallesMapa != null}"> Detalles: <span th:text="${detallesMapa}"></span></p>
+
+                                        <!-- Mapa asociado, posicion-->
+                                        <p th:if="${posicionMapa != null}"> Posición: <span th:text="${posicionMapa}"></span></p>
+
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form th:action="@{/indiceAdri-html}" method="get">
+                            <button type="submit"
+                                    style="padding: 10px 20px;
+                                                       font-size: 14px;
+                                                       background-color: #007BFF;
+                                                       color: white;
+                                                       border: none;
+                                                       cursor: pointer;
+                                                       border-radius: 5px;">
+                                Volver
+                            </button>
+                        </form>
+
+                        <div style="clear:both"></div>
+                    </div>
+                </div>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html> <
