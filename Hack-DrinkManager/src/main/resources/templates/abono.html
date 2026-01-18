@@ -21,6 +21,9 @@
 
 <form th:action="@{/cliente/menu/abono}" method="post">
 
+  <label>DNI:</label>
+  <input type="text" name="dni" required><br>
+
   <label>Tipo de abono:</label>
   <select name="tipoAbono" required>
     <option value="BASICO">Básico</option>
