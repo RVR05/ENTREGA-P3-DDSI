@@ -1971,8 +1971,34 @@ public class SistemaController {
             }
         }
     }
+
+
+
+
+    @GetMapping("/")
+    public String mostrarMenuPrincipal() {
+            
+        return "menuprincipal"; 
+            
+    }
+
+    
+    @PostMapping("/admin/menu/navegar")
+    public String navegarMenu(@RequestParam String destino) {
+            
+        switch (destino) {
+                        
+            case "clientes": return "redirect:/cliente/menu";
+            case "artistas": return "redirect:/admin/artista/menu";
+            case "patrocinadores": return "redirect:/admin/patrocinadores/opciones";
+            case "servicios": return "redirect:/admin/servicios";
+            case "infraestructuras": return "redirect:/indiceAdri-html";
+            default: return "redirect:/admin/menu-principal";
+                        
+        }
+    }
 }
 
         
-}
+
 
